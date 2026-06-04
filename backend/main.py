@@ -164,11 +164,7 @@ async def chat(request: ChatRequest):
 
     return {
         "answer": response.content,
-        "source": source,
-        "contexts": [
-            doc.page_content
-            for doc in docs
-        ]
+        "source": source
     }
 
 @app.get("/clear-db")
