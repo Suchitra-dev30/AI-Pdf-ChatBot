@@ -111,16 +111,13 @@ async def chat(request: ChatRequest):
         k=3
     )
 
-    print("\n========== RETRIEVED CHUNKS ==========")
+    if len(docs) == 0:
 
-    for i, doc in enumerate(docs, start=1):
-        print(f"\nChunk {i}")
-        print(doc.metadata)
-        print(doc.page_content[:500])
-
-    print("\n=====================================")
+        return {
+            "answer": "No relevant content found. Please upload a PDF first.",
+            "source": ""
+        }
     
-
     context = "\n\n".join(
         [doc.page_content for doc in docs]
     )
@@ -148,6 +145,8 @@ async def chat(request: ChatRequest):
             "answer": "Gemini quota exceeded. Please try again later.",
             "source": ""
         }
+
+
 
     source = docs[0].metadata.get(
         "source",

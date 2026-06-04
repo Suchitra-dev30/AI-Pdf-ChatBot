@@ -13,6 +13,9 @@ st.set_page_config(
 if "messages" not in st.session_state:
     st.session_state.messages = []
 
+if "pdf_uploaded" not in st.session_state:
+    st.session_state.pdf_uploaded = False
+
 if "uploaded_files" not in st.session_state:
     st.session_state.uploaded_files = []
 
@@ -49,10 +52,13 @@ with st.sidebar:
 
                 st.success("Uploaded Successfully")
 
+                st.session_state.pdf_uploaded = True
+
                 if uploaded_file.name not in st.session_state.uploaded_files:
                     st.session_state.uploaded_files.append(
                         uploaded_file.name
                     )
+                st.rerun()
 
     st.divider()
 
@@ -109,6 +115,14 @@ question = st.chat_input(
 
 if question:
 
+    if len(st.session_state.uploaded_files) == 0:
+
+        st.warning(
+            "Please upload a PDF first."
+        )
+
+        st.stop()
+
     # User Message
     st.session_state.messages.append(
         {
@@ -125,14 +139,27 @@ if question:
 
         with st.spinner("🤖 Thinking..."):
 
-            response = requests.post(
-                f"{API_URL}/chat",
-                json={
-                    "question": question
-                }
-            )
+            try:
 
-            data = response.json()
+                response = requests.post(
+                    f"{API_URL}/chat",
+                    json={
+                        "question": question
+                    },
+                    timeout=60
+                )
+
+                response.raise_for_status()
+
+                data = response.json()
+
+            except Exception as e:
+
+                st.error(
+                    f"Backend Error: {e}"
+                )
+
+                st.stop()
 
             answer = f"""
 {data["answer"]}
