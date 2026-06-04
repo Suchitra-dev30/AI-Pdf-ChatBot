@@ -1,10 +1,10 @@
 from fastapi import FastAPI, UploadFile, File
 import os
 from pydantic import BaseModel
-from vector_store import vector_db
+from backend.vector_store import vector_db
 
-from pdf_reader import extract_text_from_pdf
-from chunker import chunk_text
+from backend.pdf_reader import extract_text_from_pdf
+from backend.chunker import chunk_text
 
 app = FastAPI()
 
