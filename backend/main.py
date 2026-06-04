@@ -106,10 +106,19 @@ llm = ChatGoogleGenerativeAI(
 @app.post("/chat")
 async def chat(request: ChatRequest):
 
-    docs = vector_db.similarity_search(
-        request.question,
-        k=3
-    )
+    try:
+
+        docs = vector_db.similarity_search(
+            request.question,
+            k=3
+        )
+
+    except Exception as e:
+
+        return {
+            "answer": "Service is temporarily unavailable. Please try again later.",
+            "source": ""
+        }
 
     if len(docs) == 0:
 
