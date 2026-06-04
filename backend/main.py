@@ -146,11 +146,7 @@ async def chat(request: ChatRequest):
 
         return {
             "answer": "Gemini quota exceeded. Please try again later.",
-            "source": "",
-            "contexts": [
-                doc.page_content
-                for doc in docs
-            ]
+            "source": ""
         }
 
     source = docs[0].metadata.get(
